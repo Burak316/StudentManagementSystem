@@ -19,7 +19,12 @@
                 Console.WriteLine("7-Find Average Grade");
                 Console.WriteLine("0-Exit");
 
-                int choice = int.Parse(Console.ReadLine());
+                Console.Write("Please select an option: ");
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Error: Please enter a valid number!");
+                    continue;
+                }
 
 
                 switch (choice)
@@ -37,6 +42,7 @@
                             double grade = double.Parse(Console.ReadLine());
                             Student newStudent = new Student(id, name, surname, grade);
                             manager.Insert(newStudent);
+                            Console.WriteLine("Student inserted successfully!");
                         }
                         catch (InvalidOperationException ex)
                         {
@@ -55,18 +61,18 @@
                         List<Student> studentList = manager.Listing();
                         if (studentList.Count == 0)
                         {
-                            Console.Write("There is no student!");
+                            Console.WriteLine("There is no student!");
                         }
                         else
                         {
                             Console.WriteLine("ID\tName Surname\tGrade");
                             Console.WriteLine("----------------------------------------");
-                            foreach (Student student in manager.Listing())
+                            foreach (Student student in studentList)
                             {
                                 Console.Write($"{student.ID}");
                                 Console.Write($"\t{student.Name}");
                                 Console.Write($" {student.Surname}");
-                                Console.Write($"\t{student.Grade}");
+                                Console.WriteLine($"\t{student.Grade}");
                                 Console.WriteLine("---------------------------------------");
                             }
                         }
@@ -82,11 +88,11 @@
                             Console.Write($"{student.ID}");
                             Console.Write($"\t{student.Name}");
                             Console.Write($" {student.Surname}");
-                            Console.Write($"\t{student.Grade}");
+                            Console.WriteLine($"\t{student.Grade}");
                         }
                         catch (InvalidOperationException ex)
                         {
-                            Console.WriteLine($"{ex.Message}");
+                            Console.WriteLine($"Error:{ex.Message}");
                         }
                         catch (FormatException)
                         {
@@ -103,7 +109,7 @@
                         }
                         catch (InvalidOperationException ex)
                         {
-                            Console.WriteLine($"{ex.Message}");
+                            Console.WriteLine($"Error:{ex.Message}");
                         }
                         catch (FormatException)
                         {
@@ -111,19 +117,58 @@
                         }
                         break;
                     case 5:
+                        try
+                        {
+                            Console.WriteLine("Please enter the student ID to update.");
+                            int updateID = int.Parse(Console.ReadLine());
+                            Console.WriteLine("Please enter the new grade:");
+                            double newGrade = double.Parse(Console.ReadLine());
+                            manager.Update(updateID, newGrade);
+                            Console.WriteLine("Student updated successfully!");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine($"Error:{ex.Message}");
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Error: Please enter a numerical value!");
+                        }
+                        catch(ArgumentException ex)
+                        {
+                            Console.WriteLine($"Error:{ex.Message}");
+                        }
                         break;
                     case 6:
+                        try
+                        {
+                            double max=manager.Max();
+                            Console.WriteLine($"Max grade:{max}");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine($"Error:{ex.Message}");
+                        }
                         break;
                     case 7:
+                        try
+                        {
+                            double average = manager.Average();
+                            Console.WriteLine($"Average grade:{average:F2}");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine($"Error:{ex.Message}");
+                        }
                         break;
                     case 0:
+                        Console.WriteLine("Exiting...");
+                        running = false;
                         break;
                     default:
+                        Console.WriteLine("Invalid choice! Please try again!");
                         break;
                 }
-
-
-
             }
         }
     }
